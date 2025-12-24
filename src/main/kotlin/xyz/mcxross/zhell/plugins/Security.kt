@@ -1,22 +1,20 @@
 package xyz.mcxross.zhell.plugins
 
-import com.google.cloud.firestore.FirestoreOptions
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import java.security.MessageDigest
+import xyz.mcxross.zhell.security.ApiKeyRepository
 
 data class AdminPrincipal(val username: String) : Principal
 
 data class ApiKeyPrincipal(val owner: String, val name: String) : Principal
 
-fun Application.configureSecurity() {
+fun Application.configureSecurity(apiKeyRepository: ApiKeyRepository) {
   val adminSecret =
     System.getenv("ADMIN_TOKEN")
       ?: throw IllegalStateException("ADMIN_TOKEN environment variable must be set.")
-
-  val firestore = FirestoreOptions.getDefaultInstance().service
 
   authentication {
     bearer("admin-auth") {
@@ -45,14 +43,10 @@ fun Application.configureSecurity() {
 
         val hash = hashString(apiKey)
 
-        // Firestore Lookup
-        val docRef = firestore.collection("api_keys").document(hash)
-        val snapshot = docRef.get().get()
+        val keyData = apiKeyRepository.find(hash)
 
-        if (snapshot.exists() && snapshot.getBoolean("revoked") == false) {
-          val owner = snapshot.getString("owner") ?: "Unknown"
-          val name = snapshot.getString("name") ?: "Unknown"
-          context.principal(ApiKeyPrincipal(owner, name))
+        if (keyData != null && !keyData.revoked) {
+          context.principal(ApiKeyPrincipal(keyData.owner, keyData.name))
         } else {
           context.challenge("ApiKeyAuth", AuthenticationFailedCause.InvalidCredentials) {
             challenge,

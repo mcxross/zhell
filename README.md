@@ -37,6 +37,7 @@ The application is configured entirely via Environment Variables.
 | `SPONSOR_PRIVATE_KEY` | The Sui private key (bech32 `suiprivkey...`) used to sign transactions. | **Yes** | - |
 | `SUI_NETWORK` | The target Sui network: `MAINNET`, `TESTNET`, or `DEVNET`. | No | `TESTNET` |
 | `GOOGLE_APPLICATION_CREDENTIALS` | Path to service account JSON (only required for local dev). | No | - |
+| `DEBUG` | If set to `1`, uses an in-memory database instead of Firestore. | No | `0` |
 
 ---
 
@@ -44,8 +45,8 @@ The application is configured entirely via Environment Variables.
 
 ### Prerequisites
 1.  **Java 21** installed.
-2.  **Google Cloud Project** with Firestore enabled (Native Mode).
-3.  **Service Account JSON** with "Cloud Datastore User" role (for local testing).
+2.  **Google Cloud Project** with Firestore enabled (Native Mode) **OR** simply use `DEBUG=1`.
+3.  **Service Account JSON** with "Cloud Datastore User" role (if connecting to real Firestore).
 
 ### Running Locally
 1.  **Set Environment Variables**:
@@ -53,7 +54,10 @@ The application is configured entirely via Environment Variables.
     export ADMIN_TOKEN="my-super-secret-admin-token"
     export SPONSOR_PRIVATE_KEY="suiprivkey1..."
     export SUI_NETWORK="TESTNET"
-    export GOOGLE_APPLICATION_CREDENTIALS="/path/to/service-account.json"
+    # Optional: Use In-Memory DB (no Firestore required)
+    export DEBUG=1 
+    # Optional: If using real Firestore (DEBUG=0)
+    # export GOOGLE_APPLICATION_CREDENTIALS="/path/to/service-account.json"
     ```
 
 2.  **Run the Server**:

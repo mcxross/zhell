@@ -8,10 +8,11 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import xyz.mcxross.zhell.routes.adminRoutes
 import xyz.mcxross.zhell.routes.gasRoutes
+import xyz.mcxross.zhell.security.ApiKeyRepository
 import xyz.mcxross.zhell.security.ApiKeyService
 
-fun Application.configureRouting() {
-  val apiKeyService = ApiKeyService()
+fun Application.configureRouting(apiKeyRepository: ApiKeyRepository) {
+  val apiKeyService = ApiKeyService(apiKeyRepository)
   routing {
     authenticate("api-key-auth") {
       get("/protected") {

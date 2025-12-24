@@ -6,7 +6,7 @@ exposed = "0.57.0"
 h2 = "2.3.232"
 apollo-runtime = "4.3.3"
 google-cloud-firestore = "3.19.0"
-ksui = "2.3.7-SNAPSHOT"
+ksui = "2.2.5-SNAPSHOT"
 
 [libraries]
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }

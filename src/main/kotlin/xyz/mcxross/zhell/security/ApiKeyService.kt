@@ -1,14 +1,11 @@
 package xyz.mcxross.zhell.security
 
-import com.google.cloud.firestore.FirestoreOptions
 import java.security.SecureRandom
 import java.util.Base64
 import xyz.mcxross.zhell.plugins.hashString
 
-class ApiKeyService {
+class ApiKeyService(private val repository: ApiKeyRepository) {
   private val secureRandom = SecureRandom()
-
-  private val firestore = FirestoreOptions.getDefaultInstance().service
 
   fun generateApiKey(name: String, owner: String): String {
     val randomBytes = ByteArray(32)
@@ -21,15 +18,15 @@ class ApiKeyService {
     val prefix = apiKey.take(8)
 
     val keyData =
-      mapOf(
-        "prefix" to prefix,
-        "name" to name,
-        "owner" to owner,
-        "revoked" to false,
-        "createdAt" to System.currentTimeMillis(),
+      ApiKeyData(
+        prefix = prefix,
+        name = name,
+        owner = owner,
+        revoked = false,
+        createdAt = System.currentTimeMillis(),
       )
 
-    firestore.collection("api_keys").document(hash).set(keyData).get()
+    repository.save(hash, keyData)
 
     return apiKey
   }
