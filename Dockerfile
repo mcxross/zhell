@@ -4,8 +4,7 @@ WORKDIR /home/gradle/src
 
 RUN ./gradlew buildFatJar --no-daemon
 
-
-FROM openjdk:21-jdk-slim
+FROM eclipse-temurin:21-jre
 EXPOSE 8080
 
 WORKDIR /app

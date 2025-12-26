@@ -14,7 +14,7 @@ It is designed to be stateless and serverless-ready, using **Google Cloud Firest
 * **Serverless Architecture**:
     * **Compute**: Dockerized Ktor application (Cloud Run).
     * **Database**: Google Cloud Firestore (NoSQL) for low-latency key lookups.
-* **Network Agnostic**: Configurable for Sui Mainnet, Testnet, or Devnet.
+* **Network Agnostic**: Routes for Mainnet, Testnet, Devnet, Localnet, and Custom nodes.
 
 ## Tech Stack
 
@@ -35,7 +35,7 @@ The application is configured entirely via Environment Variables.
 | :--- | :--- | :--- | :--- |
 | `ADMIN_TOKEN` | A secure string used to authenticate Admin requests. | **Yes** | - |
 | `SPONSOR_PRIVATE_KEY` | The Sui private key (bech32 `suiprivkey...`) used to sign transactions. | **Yes** | - |
-| `SUI_NETWORK` | The target Sui network: `MAINNET`, `TESTNET`, or `DEVNET`. | No | `TESTNET` |
+| `SUI_CUSTOM_FULLNODE` | Fullnode URL for the `/custom/gas` route. | No | - |
 | `GOOGLE_APPLICATION_CREDENTIALS` | Path to service account JSON (only required for local dev). | No | - |
 | `DEBUG` | If set to `1`, uses an in-memory database instead of Firestore. | No | `0` |
 
@@ -53,7 +53,7 @@ The application is configured entirely via Environment Variables.
     ```bash
     export ADMIN_TOKEN="my-super-secret-admin-token"
     export SPONSOR_PRIVATE_KEY="suiprivkey1..."
-    export SUI_NETWORK="TESTNET"
+    export SUI_CUSTOM_FULLNODE="https://your-custom-fullnode"
     # Optional: Use In-Memory DB (no Firestore required)
     export DEBUG=1 
     # Optional: If using real Firestore (DEBUG=0)
@@ -103,7 +103,7 @@ gcloud run deploy zhell-gas-service \
 --allow-unauthenticated \
 --set-env-vars ADMIN_TOKEN="prod-secure-admin-token" \
 --set-env-vars SPONSOR_PRIVATE_KEY="suiprivkey1..." \
---set-env-vars SUI_NETWORK="MAINNET"
+--set-env-vars SUI_CUSTOM_FULLNODE="https://your-custom-fullnode"
 ```
 ### 4. Permissions
 Ensure the Cloud Run Service Account has the Cloud Datastore User role to access Firestore.
@@ -132,7 +132,7 @@ Response:
 ```
 
 ### 2. Sponsor Transaction
-POST /gas
+POST /gas (mainnet)
 
 Headers: X-API-Key: <YOUR_API_KEY>
 
@@ -154,3 +154,15 @@ Response:
 "status": "SPONSORED"
 }
 ```
+
+### 3. Network-Specific Sponsorship
+All routes require the same `X-API-Key` header and request body as `/gas`.
+
+```
+POST /testnet/gas
+POST /devnet/gas
+POST /localnet/gas
+POST /custom/gas
+```
+
+`/custom/gas` uses the `SUI_CUSTOM_FULLNODE` environment variable.

@@ -24,7 +24,7 @@ dependencies {
   implementation(libs.exposed.java.time)
   implementation(libs.h2)
   implementation(libs.google.cloud.firestore)
-  implementation(libs.ksui)
+  implementation(libs.ksui.jvm)
   implementation(libs.apollo.runtime)
   testImplementation(libs.ktor.server.test.host)
   testImplementation(libs.kotlin.test.junit)

@@ -6,7 +6,7 @@ exposed = "0.57.0"
 h2 = "2.3.232"
 apollo-runtime = "4.3.3"
 google-cloud-firestore = "3.19.0"
-ksui = "2.2.5-SNAPSHOT"
+ksui = "2.2.6-SNAPSHOT"
 
 [libraries]
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
@@ -25,7 +25,7 @@ exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", versio
 h2 = { module = "com.h2database:h2", version.ref = "h2" }
 apollo-runtime = { module = "com.apollographql.apollo:apollo-runtime", version.ref = "apollo-runtime" }
 google-cloud-firestore = { module = "com.google.cloud:google-cloud-firestore", version.ref = "google-cloud-firestore" }
-ksui = { module = "xyz.mcxross.ksui:ksui", version.ref = "ksui" }
+ksui-jvm = { module = "xyz.mcxross.ksui:ksui-jvm", version.ref = "ksui" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
